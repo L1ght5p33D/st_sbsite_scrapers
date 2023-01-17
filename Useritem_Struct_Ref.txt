@@ -1,0 +1,49 @@
+
+
+
+std price-> double
+condition - > double
+
+keywords -> stringified list
+s3 -> list
+
+dimensionmap - > all strings except frac numers and denoms
+
+
+
+keywordlist - > string
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          "completePost" : "complete",
+          "localImageUUIDList" : """["db2bc387-b71d-49d9-9992-c0dc2ae9e090"]""",
+          "userId" : "a",
+          "userUUID" : "_rg47mgBurerGMsKHWid",
+          "title" : " ",
+          "price" : " 56",
+          "brandShaper" : " ",
+          "description" : " ",
+          "latitude" : 33.4011886,
+          "longitude" : -117.5952762,
+          "dimensionMap" : """{"lengthFeet":" 3","lengthInches":" 2","widthInches":" ","widthFracNumer":" ","widthFracDenom":" ","widthFrac":" ","thicknessInches":" ","thicknessFracNumer":" ","thicknessFracDenom":" ","thicknessFrac":" ","volumeLiters":" "}""",
+          "finBrand" : " ",
+          "finSetup" : " ",
+          "boardType" : " ",
+          "condition" : 120.0,
+          "keywords" : "[]",
+          "timeStamp" : "2020-05-26 19:21:26.332681",
+          "cityString" : "San Clemente",
+          "itemUUID" : "ae71437f-832b-4779-bd0f-7bbbd106180f",
+          "profilePic" : true,
+          "pwAccountType" : "Free",
+          "s3ImageTags" : [
+            "https://storage.googleapis.com/surftrade_user_images/db2bc387-b71d-49d9-9992-c0dc2ae9e090.jpg"
+          ],
+          "stdLength" : 0.0,
+          "stdWidth" : 0.0,
+          "stdThick" : 0.0,
+          "stdVol" : 0.0,
+          "stdPrice" : 0.0,
+          "sellerClass" : "private"
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+

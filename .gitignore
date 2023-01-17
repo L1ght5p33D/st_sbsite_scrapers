@@ -1,0 +1,8 @@
+
+chromedriver*
+.DS_Store
+/env_scrape
+.git
+.idea
+*__init__*
+*archive*

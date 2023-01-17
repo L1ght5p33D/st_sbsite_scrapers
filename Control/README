@@ -1,0 +1,18 @@
+
+"""
+~ Scrape Control ~
+"""
+
+Args ::: 
+	1) <index name>
+
+
+From ::: https://stackoverflow.com/questions/9952177/whats-the-meaning-of-the-parameter-e-for-bash-shell-command-line/9952249
+
+	The -e option means "if any pipeline ever ends with a non-zero ('error') exit status, terminate the script immediately"
+
+
+"""
+
+
+

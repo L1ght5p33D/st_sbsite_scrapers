@@ -1,0 +1,36 @@
+
+
+~ UsedSurfSC Scrape ~
+
+
+"""
+UsedSurfSC_Scrape.sh
+
+	Arguments
+		1)  Diff or Full
+		2)  Index or notIndex
+		3)  <index name>
+
+
+example:
+./UsedSurfSC_Scrape.sh Diff Index st_items_k2t1 -e
+
+generates toAdd<date> and toDelete<date> in /updates
+
+"""
+
+	
+"""
+
+looks for file names in /updates
+
+No Index name argument, default "st_items_k2t1"
+
+apply_all_updates.py
+
+	Arguments: n file names to index
+		1) Index Name
+		2)<file name>
+		.
+		.
+		n)

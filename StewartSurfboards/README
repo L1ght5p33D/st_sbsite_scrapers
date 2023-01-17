@@ -1,0 +1,45 @@
+
+~ StewartSurfboards Scrape ~
+
+"""
+From ::: https://stackoverflow.com/questions/9952177/whats-the-meaning-of-the-parameter-e-for-bash-shell-command-line/9952249
+
+	The -e option means "if any pipeline ever ends with a non-zero ('error') exit status, terminate the script immediately"
+
+Args:
+1) Diff / Full
+
+2) Index / NotIndex
+
+3) <index_name> elastic index name
+
+Looks at exisitng items and scrapes for urls,
+Adds and Deletes Items to <index_name>
+
+
+"""
+
+  
+Run	StewartSurfboardsScrape.sh  Diff  Index  <INDEX>   -e
+
+	-Generates diff_preElastic_objects and moves to preElasticBackup/archive
+
+	-Should automatically update index with items if no error
+
+
+
+Then 
+
+Run updates/generage_scrapeUser_Blob.py  <index name> <user name>
+
+	-Generates a file named scrapeUserGenBlob_< date >.txt
+scp this to vultr to load on production
+
+
+
+
+
+
+
+
+
