@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 import sys
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from parse_scraped_for_preElastic import parse_scraped_for_preElastic
 import requests
 from helper_scrape_methods import countTotalBracketsInJson, parseJsonToCloseBracket, removeCharsToOpenBracket
@@ -17,13 +18,16 @@ from helper_scrape_methods import countTotalBracketsInJson, parseJsonToCloseBrac
 # fpmem=open('saveDelete_Memory_.log','w+')
 # @profile(stream=fpmem)
 
-gsel = webdriver.PhantomJS()
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+gsel = webdriver.Chrome(sys.argv[3], options=chrome_options)
+
 _3TradeElasticInstance = Elasticsearch()
 
 def checkElasticStatus():
     print("checking elastic status")
-    port_9200_res = requests.get("http://localhost:9200")
     try:
+        port_9200_res = requests.get("http://localhost:9200")
         json.loads(port_9200_res.text)
         if "You Know, for Search" in port_9200_res.text:
             print("ELASTIC RUNNING")
@@ -33,9 +37,6 @@ def checkElasticStatus():
         return False
     return False
     print("done")
-
-
-
 
 
 def get_item_urls(pageData):
@@ -53,7 +54,7 @@ def get_item_urls(pageData):
                 allItemUrls.append("https://stewart-surfboards.myshopify.com" + piData.replace("\"","").replace('"',""))
 
 
-    with open("../data/diff_urls", "a+") as file:
+    with open(sys.argv[2] + "/diff_urls", "a+") as file:
         for urlLine in allItemUrls:
             print("adding diff url in scrape ::: ")
             print(urlLine)
@@ -86,15 +87,15 @@ if __name__ == "__main__":
     
     if checkElasticStatus() == False:
         print('ElasticSearch is not running ... ')
-        sys.exit()
+        sys.exit(1)
 
 
-    ci_search = _3TradeElasticInstance.search(index="st_items_k2t1",body={
+    ci_search = _3TradeElasticInstance.search(index=sys.argv[1],body={
         "query":{"match":{"userId":"StewartSurfboards"}}
         }, size = 300)
 
-    old_url_file = "../data/cur_urls.txt"    
-    new_url_file = "../data/diff_urls.txt"
+    old_url_file = sys.argv[2] + "/cur_urls"    
+    new_url_file = sys.argv[2] + "/diff_urls"
 
     with open(old_url_file, "a+") as cf:
         for hit in ci_search["hits"]["hits"]:
@@ -111,15 +112,19 @@ if __name__ == "__main__":
     with open(old_url_file) as ofile:
         linesOld = ofile.readlines()
 
+    print("Reading new")
     with open(new_url_file) as nfile:
         linesNew = nfile.readlines()
     
     
     file_time_slug = datetime.now().strftime("%m-%d-%Y--%H%M")    
+    
+    addLines = []
     for newurl in linesNew:
         print("comparing new line")
         if newurl not in linesOld:
             print("new line not in old ::: " + str(newurl))
+            addLines.append(newurl)
             #scrape_item_url(newurl, file_time_slug)
 
     remLines = []
@@ -131,18 +136,15 @@ if __name__ == "__main__":
             #delete_item_by_url(line, file_time_slug)
             
 
-    with open( "../data/toDelete_urls" , "a+") as remf:
+    with open( sys.argv[2] + "/toDelete_urls" , "a+") as remf:
         for line in remLines:
             remf.write(line + "\n" )
 
-    with open( "../data/toAdd_urls", "a+" ) as addf:
+    with open( sys.argv[2] + "/toAdd_urls", "a+" ) as addf:
         for line in addLines:
             addf.write(line + "\n")
 
 
-    if (os.path.exists("../data/scraped_items")):
-        parse_scraped_for_preElastic(sitem)
-    
     print("url scrape complete")
 
 

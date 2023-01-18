@@ -17,6 +17,8 @@ cd ../env_scrape/bin
 source ./activate
 cd ../../StewartSurfboards
 
+data_dir=$scrape_dir/StewartSurfboards/data
+
 echo '~~~ Stewart Scrape ~~~'
 echo ' ::: '
 # Script name
@@ -43,6 +45,10 @@ if [ -f "data/diff_urls" ]; then
     mv data/diff_urls data/scrape_archive/diff_urls_${time_string}
 fi
 
+if [ -f "data/scraped_items" ]; then
+    mv data/scraped_items data/scrape_archive/scraped_items_${time_string}
+fi
+
 if [ -f "data/preElastic_objects" ]; then
     mv data/preElastic_objects data/scrape_archive/preElasticObjects_${time_string}
 fi
@@ -61,13 +67,16 @@ fi
     touch data/preElastic_objects
 
     # Calls parse_toAdd_for_preElastic which creates /data/preElastic_objects"
-    python src/ss_url_scrape.py $2 $1
-   
-    python src/ss_item_scrape.py $webdriver_path
+    python src/ss_url_scrape.py $2 $data_dir $webdriver_path
+    echo ' stewart scrape url scrape complete '
 
+    python src/ss_item_scrape.py $webdriver_path
     echo 'Stewart Surf Url Scrape complete '    
+   
+    python  parse_scraped_for_preElastic.py  
+    echo ' parse scraped for pre elastic complete '
     
-   if [[ "$2" == "Index" ]] ; then
+    if [[ "$2" == "Index" ]] ; then
 
     python src/index_preElastic_objects.py $2
 

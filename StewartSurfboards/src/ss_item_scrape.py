@@ -45,5 +45,13 @@ def scrape_item_url(scrapeUrl, timeslug):
 if __name__ == "__main__":
     print("init item scrape")
 
+    file_time_slug = datetime.now().strftime("%m-%d-%Y--%H%M")
 
+    addUrls = []
+    with open( "../data/toAdd_urls" ,"r") as addf:
+        addUrls = addf.readlines()
+        
+        for aurl in addUrls:
+            scrape_item_url(aurl, file_time_slug)
+   
     

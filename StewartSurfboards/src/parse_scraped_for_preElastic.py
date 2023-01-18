@@ -303,3 +303,9 @@ def parse_scraped_for_preElastic():
 
             itemIndex +=1
 
+
+if __name__ == "main":
+    print(" parse scraped for pre elastic init")
+    if (os.path.exists("../data/scraped_items")):
+        parse_scraped_for_preElastic()
+
