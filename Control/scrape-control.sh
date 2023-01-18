@@ -33,7 +33,7 @@ for client in "${scrapeclients[@]}"; do
         
         cd /Users/drix/SurfTrade_Content_Root/httpScrapers/auto_scrape_scripts/StewartSurfboards
 
-        ./StewartSurfboardsScrape.sh Diff Index $stItemIndex
+        ./StewartSurfboardsScrape.sh Index $stItemIndex
     fi
 
 
@@ -43,7 +43,7 @@ for client in "${scrapeclients[@]}"; do
 
         cd /Users/drix/SurfTrade_Content_Root/httpScrapers/auto_scrape_scripts/UsedSurf
         # to add files generated
-        ./UsedSurfSC_Scrape.sh Diff Index $stItemIndex
+        ./UsedSurfSC_Scrape.sh Index $stItemIndex
         cd /Users/drix/projects/SurfTrade_Content_Root/httpScrapers/auto_scrape_scripts/UsedSurf/updates
 
         
@@ -61,7 +61,12 @@ for client in "${scrapeclients[@]}"; do
 	./IconsScrape.sh Index $stItemIndex    
     fi
 
-    
+    if [[ $client == "SecondhandSurf" ]] ; then
+	    echo ' ~ Secondhand Surf scrape ~ '
+
+	   cd $scrape_dir/SecondhandScrape
+	   ./Secondhand_Scrape.sh 
+    fi
 
 done
 

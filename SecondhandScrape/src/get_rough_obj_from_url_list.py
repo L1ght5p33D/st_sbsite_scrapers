@@ -567,7 +567,7 @@ if __name__ == "__main__":
         executable_path=sys.argv[2], options=chrome_options)
 
     urls_to_scrape = []
-    with open(sys.argv[1] + "/url_out", "r") as urlf:
+    with open(sys.argv[1] + "/toAdd_urls", "r") as urlf:
         urls_to_scrape = urlf.readlines()
 
     for url in urls_to_scrape:

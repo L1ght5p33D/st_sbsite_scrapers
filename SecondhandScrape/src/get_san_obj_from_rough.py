@@ -1,5 +1,7 @@
 import json
 import datetime
+import sys
+
 
 bt_cap_list = [
 'Shortboard',
@@ -191,7 +193,7 @@ for item in rough_items:
 
 	item["description"] = item["p_description"].replace("<br>", "").replace("\\n", "").replace("\\ufffd","")
 
-	with open(sys.argv[1] + "/final_parsed_items.txt","a+") as wf:
+	with open(sys.argv[1] + "/final_parsed_items","a+") as wf:
 		wf.write(json.dumps(item) + "\n")
 
 
