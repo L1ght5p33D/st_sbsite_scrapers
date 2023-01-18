@@ -3,109 +3,73 @@
 
 cleanup() {
     rv=$?
-    rm -rf "$tmpdir"
     exit $rv
 }
 
-tmpdir="$(mktemp)"
 trap "cleanup" INT TERM EXIT
 
+set -e
 
-# cd /Users/drix/SurfTrade_Content_Root/httpScrapers/scrapeEnv/bin
-cd /Users/drix/SurfTrade_Content_Root/httpScrapers/new_scrape_ENV_3/scrap3/bin
 
+source ../Control/scrape_config.sh
+
+cd ../env_scrape/bin
 source ./activate
-cd /Users/drix/SurfTrade_Content_Root/httpScrapers/auto_scrape_scripts/StewartSurfboards/src
+cd ../../StewartSurfboards
 
 echo '~~~ Stewart Scrape ~~~'
 echo ' ::: '
-# The script name
+# Script name
 # echo '$0' = $0
 # echo 'Args'
-# Full or Diff 
-# echo 'Full scrape or Diff scrape'
+# Index or not index
 # echo '$1 = ' $1
-# Index or not index
-# echo 'Index or not index ::: '
-# echo '$2 = ' $2
-# Index or not index
 # echo 'Index name ::: '
-# echo '$3 = ' $3
+# echo '$2 = ' $2
 
 date_string=$(date '+%Y-%m-%d')
 time_string=$(date '+%Y%m%d-%H%M')
 
 if [[ "$1" == 0 ]] ; then
-    echo 'Specify Parameters'
+    echo 'Specify Parameters for Stewart sh'
     exit 1
 fi
 
-if [[ "$1" == "Full" ]] ; then
-    echo 'Full Scrape'
+if [ -f "data/cur_urls" ]; then
+    mv data/cur_urls data/scrape_archive/cur_urls_${time_string}
+fi
 
-    saveScrapeObjPath="../data/old_scrape_objects/oldOBJS_"
-    saveUrlsPath="../data/old_scrape_objects/oldURLS_"
-    savePreElasticObjectsPath="../data/old_scrape_objects/oldPREELASTIC_"
+if [ -f "data/diff_urls" ]; then
+    mv data/diff_urls data/scrape_archive/diff_urls_${time_string}
+fi
 
-    extenForFile="_.txt"
+if [ -f "data/preElastic_objects" ]; then
+    mv data/preElastic_objects data/scrape_archive/preElasticObjects_${time_string}
+fi
 
-    mv ../data/full_scrape_data.txt ${saveScrapeObjPath}${date_string}${extenForFile}
-    mv ../data/stewartItemUrls.txt ${saveUrlsPath}${date_string}${extenForFile}
-    mv ../data/preElasticObjects.txt ${savePreElasticObjectsPath}${date_string}${extenForFile}
+if ls data/toAdd* > /dev/null 2>&1; then
+    mv data/toAdd* data/scrape_archive/toAdd_${time_string}
+fi
 
-    scrapy runspider ssProductPageScrapeUrls.py
-	echo 'Crawl Done'
-
-	python ssItemPageScrape.py
-	python ss_object_parse_and_save.py
-
-	if [[ "$2" == "Index" ]] ; then
-    echo 'Indexing'
-    python indexStewartObjFile.py $3
-    exit 1
-
-	fi
+if ls data/toDelete* > /dev/null 2>&1; then    
+    mv data/toDelete* data/scrape_archive/toDelete_${time_string}
 fi
 
 
-if [[ "$1" ==  "Diff" ]] ; then
-    echo 'Diff Scrape'
-    touch ../data/cur_urls.txt
-    touch ../data/diff_urls.txt
-    # Calls parse_toAdd_for_preElastic which creates /data/diff_preElastic_objects.txt"
-    python diff_url_scrape.py $3 $2
-    echo 'Diff Scrape complete '    
-    #the urls from current items in elastic for user
+    touch data/cur_urls
+    touch data/diff_urls
+    touch data/preElastic_objects
 
+    # Calls parse_toAdd_for_preElastic which creates /data/preElastic_objects"
+    python src/ss_url_scrape.py $2 $1
+   
+    python src/ss_item_scrape.py $webdriver_path
+
+    echo 'Stewart Surf Url Scrape complete '    
     
-        
+   if [[ "$2" == "Index" ]] ; then
 
-    mv ../data/cur_urls.txt ../data/old_scrape_objects/user_cur_items/cur_urls_${time_string}
-    cp ../data/diff_urls.txt ../updates/diff_urls
-    mv ../data/diff_urls.txt ../data/old_scrape_objects/diff_urls_${time_string}
-
-    echo 'Files moved start parse elastic'
-    # creates diff_preElastic_objects.txt
-
-    python parse_toAdd_for_preElastic.py
-    
-    if [[ "$2" == "Index" ]] ; then
-    echo 'Indexing'
-
-
-    python index_preElastic_objects.py $3 "../data/diff_preElastic_objects.txt"
+    python src/index_preElastic_objects.py $2
 
     echo 'Indexing complete'
-    fi
-
-    echo 'init Steawart cleanup'
-    cp ../data/diff_preElastic_objects.txt ../updates/_diff_gen_formatted_items_
-    mv ../data/diff_preElastic_objects.txt ../data/preElasticBackup/archive/diff_items_${time_string}.txt
-    touch ../data/diff_preElastic_objects.txt
-
-    cp ../data/toAdd* ../updates/
-    cp ../data/toDelete* ../updates/
-
-
-    echo 'Cleanup complete'
-fi
+   fi

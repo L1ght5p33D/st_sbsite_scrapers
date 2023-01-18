@@ -2,12 +2,6 @@ import json
 import time
 import datetime
 import os
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.support.ui import WebDriverWait
-import sys
-sys.path.append("..")
 
 from elasticsearch import Elasticsearch, exceptions, TransportError
 _1337ElasticInstance = Elasticsearch()
@@ -23,16 +17,13 @@ def count_digits(s):
     return dcount
 
 
-def parse_toAdd_for_preElastic(objfile):
+def parse_scraped_for_preElastic():
     print("Index from to Add")
-
-    objFile = objfile
-    # objFile = '../data/' + sys.argv[1]
 
     objs = []
     sObj = {}
 
-    with open(objFile) as objF:
+    with open("../data/scraped_items", "r") as objF:
         objs = objF.readlines()
     objF.close()
 
@@ -41,9 +32,6 @@ def parse_toAdd_for_preElastic(objfile):
 
     parsedLengthFeet = 0
     parsedLengthInches = 0
-
-    # with open("../data/stewartItemUrls.txt") as urlF:
-        # itemLinkList = urlF.readlines()
 
     itemIndex = 0
     for scrapeObjString in objs:
@@ -310,14 +298,8 @@ def parse_toAdd_for_preElastic(objfile):
             
 
             print(finalObj)
-            with open("../data/diff_preElastic_objects.txt", "a+") as file:
+            with open("../data/preElastic_objects", "a+") as file:
                 file.write(json.dumps(finalObj) + "\n")
-
-            # _1337ElasticInstance.index(index="ttitems", doc_type="useritem",
-            #                      body=finalObj, id=finalObj["itemUUID"]  )
 
             itemIndex +=1
 
-# if __name__ == "__main__":
-    # parse_toAdd_for_preElastic("../updates/toAdd_")
-# parse_toAdd_for_preElastic("../data/toAdd01-17-2020--0759.txt")

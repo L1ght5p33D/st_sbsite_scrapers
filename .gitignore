@@ -6,3 +6,4 @@ chromedriver*
 .idea
 *__init__*
 *archive*
+*.swp
