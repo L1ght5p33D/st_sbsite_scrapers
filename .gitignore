@@ -7,3 +7,5 @@ chromedriver*
 *__init__*
 *archive*
 *.swp
+
+*ghostdriver.log

@@ -2,6 +2,7 @@ import json
 import time
 import datetime
 import os
+import sys
 
 from elasticsearch import Elasticsearch, exceptions, TransportError
 _1337ElasticInstance = Elasticsearch()
@@ -23,18 +24,15 @@ def parse_scraped_for_preElastic():
     objs = []
     sObj = {}
 
-    with open("../data/scraped_items", "r") as objF:
+    with open(sys.argv[1] + "/scraped_items", "r") as objF:
         objs = objF.readlines()
-    objF.close()
-
-    print("got toadd file objects length :: ")
-    print(str(len(objs)))
 
     parsedLengthFeet = 0
     parsedLengthInches = 0
 
     itemIndex = 0
     for scrapeObjString in objs:
+        print("parse object ~ " + str( scrapeObjString ))
         if itemIndex<=999:
             try:
                 scrapeObj = json.loads(scrapeObjString)
@@ -42,6 +40,7 @@ def parse_scraped_for_preElastic():
                 print("couldnt load json")
                 continue
 
+            """
             tDimsMap = {}
             parsedLengthFeet = 0
             parsedLengthInches = 0
@@ -56,7 +55,6 @@ def parse_scraped_for_preElastic():
                 print("found length split")
                 print(lsb)
                 lsp = ""
-
                 lsf = 0
                 if "'" in lsb:
                     print("found quote in lsb")
@@ -104,37 +102,39 @@ def parse_scraped_for_preElastic():
                 tDimsMap["lengthFeet"] = parsedLengthFeet
 
 
-
+            widthDigitsCount = 0
+            wdDigits = []
+            ws1 = []
             if "Width" in scrapeObj["description"]:
 
                 widthSplit = scrapeObj["description"].split("Width")[1]
                 ws1 = widthSplit.split("<")[0]
                 widthDigitsCount = count_digits(ws1)
 
-            wdDigits = []
             for char in ws1:
                 if char.isdigit():
                     wdDigits.append(char)
 
-            parsedWidthInches = " "
-            parsedWidthFracNumer = " "
-            parsedWidthFracDenom = " "
+            parsedWidthInches = 0
+            parsedWidthFracNumer = 0
+            parsedWidthFracDenom = 0
 
-            parsedWidthInches = str(wdDigits[0])
-            parsedWidthInches += str(wdDigits[1])
+            if len(wdDigits) > 0:
+                parsedWidthInches = str(wdDigits[0])
+                parsedWidthInches += str(wdDigits[1])
 
-            if widthDigitsCount == 4:
-                parsedWidthFracNumer = str(wdDigits[2])
-                parsedWidthFracDenom = str(wdDigits[3])
-            if widthDigitsCount == 5:
-                parsedWidthFracNumer = str(wdDigits[2])
-                parsedWidthFracDenom = str(wdDigits[3]) + str(wdDigits[4])
-            if widthDigitsCount == 6:
-                parsedWidthFracNumer = str(wdDigits[2])+str(wdDigits[3])
-                parsedWidthFracDenom = str(wdDigits[4]) + str(wdDigits[5])
-            else:
-                parsedWidthFracNumer= 0
-                parsedWidthFracDenom=1
+                if widthDigitsCount == 4:
+                    parsedWidthFracNumer = str(wdDigits[2])
+                    parsedWidthFracDenom = str(wdDigits[3])
+                if widthDigitsCount == 5:
+                    parsedWidthFracNumer = str(wdDigits[2])
+                    parsedWidthFracDenom = str(wdDigits[3]) + str(wdDigits[4])
+                if widthDigitsCount == 6:
+                    parsedWidthFracNumer = str(wdDigits[2])+str(wdDigits[3])
+                    parsedWidthFracDenom = str(wdDigits[4]) + str(wdDigits[5])
+                else:
+                    parsedWidthFracNumer= 0
+                    parsedWidthFracDenom=1
 
             parsedThickInches = 0
             parsedThickFracNumer = 0
@@ -146,25 +146,25 @@ def parse_scraped_for_preElastic():
                 ts1 = thickSplit.split("<")[0]
                 thickDigitsCount = count_digits(ts1)
 
-            tdDigits = []
-            for char in ts1:
-                if char.isdigit():
-                    tdDigits.append(char)
+                tdDigits = []
+                for char in ts1:
+                    if char.isdigit():
+                        tdDigits.append(char)
+                if len(tdDigits) > 0:
+                    parsedThickInches = str(tdDigits[0])
 
-            parsedThickInches = str(tdDigits[0])
-
-            if thickDigitsCount == 3:
-                parsedThickFracNumer = str(tdDigits[1])
-                parsedThickFracDenom = str(tdDigits[2])
-            if thickDigitsCount == 4:
-                parsedThickFracNumer = str(tdDigits[1])
-                parsedThickFracDenom = str(tdDigits[2]) + str(tdDigits[3])
-            if thickDigitsCount == 5:
-                parsedThickFracNumer = str(tdDigits[1])+str(tdDigits[2])
-                parsedThickFracDenom = str(tdDigits[3]) + str(tdDigits[4])
-            else:
-                parsedThickFracNumer = 0
-                parsedThickFracDenom = 1
+                    if thickDigitsCount == 3:
+                        parsedThickFracNumer = str(tdDigits[1])
+                        parsedThickFracDenom = str(tdDigits[2])
+                    if thickDigitsCount == 4:
+                        parsedThickFracNumer = str(tdDigits[1])
+                        parsedThickFracDenom = str(tdDigits[2]) + str(tdDigits[3])
+                    if thickDigitsCount == 5:
+                        parsedThickFracNumer = str(tdDigits[1])+str(tdDigits[2])
+                        parsedThickFracDenom = str(tdDigits[3]) + str(tdDigits[4])
+                    else:
+                        parsedThickFracNumer = 0
+                        parsedThickFracDenom = 1
 
 
 
@@ -190,7 +190,7 @@ def parse_scraped_for_preElastic():
 
             sObj["dimMap"] = tDimsMap
 
-
+            print("build dim map ~ " + str(tDimsMap))
             price = "0"
 
             if "price" in scrapeObj:
@@ -218,8 +218,11 @@ def parse_scraped_for_preElastic():
             cWidth = float(tDimsMap["widthInches"])
             cWidthNumer = float(tDimsMap["widthFracNumer"])
             cWidthDenom = float(tDimsMap["widthFracDenom"])
-            sWidth = cWidth + (cWidthNumer/cWidthDenom)
-
+            
+            if cWidthDenom != 0:
+                sWidth = cWidth + (cWidthNumer/cWidthDenom)
+            else:
+                sWidth = 0
             cThick = float(tDimsMap["thicknessInches"])
             cThickNumer = float(tDimsMap["thicknessFracNumer"])
             cThickDenom = float(tDimsMap["thicknessFracDenom"])
@@ -231,9 +234,15 @@ def parse_scraped_for_preElastic():
                 sThick = cThick + (cThickNumer/cThickDenom)
 
             tDimsMap["volumeLiters"] = " "
+            """
+            descSplit = scrapeObj["description"].split(">")
 
-            sanDesc = scrapeObj["description"].split("<")[0]
+            sanDesc = ""
+            for desc_seg in sanDesc:
+                sanDesc += desc_seg.split("<")[0]
 
+            finalObj = {}
+            
             # sanDesc = sanDesc.replace("\\n", " ")
             # sanDesc = sanDesc.replace("\n", " ")
             # sanDesc = sanDesc.replace("\u2019", "'")
@@ -259,8 +268,8 @@ def parse_scraped_for_preElastic():
 
 
             finalObj["itemUUID"] = str(scrapeObj["id"])
-            finalObj["dimensionMap"] = json.dumps(tDimsMap)
-
+            #finalObj["dimensionMap"] = json.dumps(tDimsMap)
+            finalObj["dimensionMap"] = {}
 
             stripImageUrl = imagesList[0]
 
@@ -296,16 +305,16 @@ def parse_scraped_for_preElastic():
             
             finalObjEncoded = json.dumps(finalObj)
             
-
+            print(" ~ FINAL ENC OBJ ~ " + str( finalObjEncoded ))
             print(finalObj)
-            with open("../data/preElastic_objects", "a+") as file:
+            with open(sys.argv[1] + "/preElastic_objects", "a+") as file:
                 file.write(json.dumps(finalObj) + "\n")
 
             itemIndex +=1
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     print(" parse scraped for pre elastic init")
-    if (os.path.exists("../data/scraped_items")):
+    if (os.path.exists(sys.argv[1] + "/scraped_items")):
         parse_scraped_for_preElastic()
 

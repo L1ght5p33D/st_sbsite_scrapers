@@ -1,4 +1,6 @@
 import json
+import sys
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from helper_scrape_methods import countTotalBracketsInJson, parseJsonToCloseBracket, removeCharsToOpenBracket
@@ -6,7 +8,7 @@ from helper_scrape_methods import countTotalBracketsInJson, parseJsonToCloseBrac
 
 chrome_options = Options()
 chrome_options.add_argument("--headless")
-gsel = webdriver.Chrome(sys.argv[1], options=chrome_options)
+gsel = webdriver.Chrome(sys.argv[2], options=chrome_options)
 
 
 def objScrape(pageString, itemurl):
@@ -36,7 +38,7 @@ def scrape_item_url(scrapeUrl, timeslug):
     if objParse == False:
         return
 
-    with open('../data/scraped_items', "a+") as taf:
+    with open(sys.argv[1] + '/scraped_items', "a+") as taf:
         taf.write(json.dumps(objParse) + "\n")
 
 
@@ -48,10 +50,11 @@ if __name__ == "__main__":
     file_time_slug = datetime.now().strftime("%m-%d-%Y--%H%M")
 
     addUrls = []
-    with open( "../data/toAdd_urls" ,"r") as addf:
+    with open( sys.argv[1] + "/toAdd_urls" ,"r") as addf:
         addUrls = addf.readlines()
         
         for aurl in addUrls:
-            scrape_item_url(aurl, file_time_slug)
+            if len(aurl) >1:
+                scrape_item_url(aurl, file_time_slug)
    
     

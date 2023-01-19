@@ -70,10 +70,10 @@ fi
     python src/ss_url_scrape.py $2 $data_dir $webdriver_path
     echo ' stewart scrape url scrape complete '
 
-    python src/ss_item_scrape.py $webdriver_path
+    python src/ss_item_scrape.py $data_dir $webdriver_path
     echo 'Stewart Surf Url Scrape complete '    
    
-    python  parse_scraped_for_preElastic.py  
+    python  parse_scraped_for_preElastic.py $data_dir  
     echo ' parse scraped for pre elastic complete '
     
     if [[ "$2" == "Index" ]] ; then
