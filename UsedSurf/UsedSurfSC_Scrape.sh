@@ -3,11 +3,11 @@
 
 cleanup() {
     rv=$?
-    rm -rf "$tmpdir"
     exit $rv
 }
 
-tmpdir="$(mktemp)"
+set -e
+
 trap "cleanup" INT TERM EXIT
 # Do things...
 echo 'error exiting'

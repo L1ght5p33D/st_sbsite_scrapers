@@ -62,9 +62,6 @@ if ls data/toDelete* > /dev/null 2>&1; then
 fi
 
 
-    touch data/cur_urls
-    touch data/diff_urls
-    touch data/preElastic_objects
 
     # Calls parse_toAdd_for_preElastic which creates /data/preElastic_objects"
     python src/ss_url_scrape.py $2 $data_dir $webdriver_path

@@ -36,30 +36,26 @@ fi
 
 # list of base url and product url for board type data
 if [ -f "data/to_update_data" ]; then
-	mv data/to_update_data ./archive/update_data_${time_string}
+	mv data/to_update_data data/archive/update_data_${time_string}
 fi
 if [ -f "data/scraped_items" ]; then
-	mv data/scraped_items ./archive/scraped_items_${time_string}
+	mv data/scraped_items data/archive/scraped_items_${time_string}
 fi
 if [ -f "data/preElastic_items" ]; then
-	mv data/preElastic_items ./archive/pre_elastic_${time_string}
+	mv data/preElastic_items data/archive/pre_elastic_${time_string}
 fi
 if [ -f "data/diff_urls" ]; then
-	mv data/diff_urls ./archive/diff_urls_${time_string}
+	mv data/diff_urls data/archive/diff_urls_${time_string}
 fi
 
 # Current Urls are generated from elasticsearch, makes it simpler
 
 if ls data/toAdd* > /dev/null 2>&1; then
-	mv $(ls data/toAdd*) archive/to_add_${time_string}
+	mv $(ls data/toAdd*) data/archive/to_add_${time_string}
 fi
 if ls data/toDelete* > /dev/null 2>&1; then
-	mv $(ls data/toDelete*) archive/to_delete_${time_string}
+	mv $(ls data/toDelete*) data/archive/to_delete_${time_string}
 fi
-touch data/toDelete_urls_
-touch data/to_update_data
-touch data/cur_urls
-touch data/diff_urls
 
 
 # Gets board info page urls from list pages

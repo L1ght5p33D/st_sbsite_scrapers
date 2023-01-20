@@ -36,37 +36,37 @@ time_string=$(date '+%Y%m%d-%H%M')
 #TODO Add diff  >> need toDelete urls
 
 if [ -f "data/url_out" ];then
-	mv data/url_out scrape_archive/url_out${date_string}${time_string}
+	mv data/url_out data/scrape_archive/url_out${date_string}${time_string}
 else
 	echo "no url out file"
 fi
 
 if [ -f "data/cur_urls" ];then
-	mv data/cur_urls scrape_archive/cur_urls_${time_string}
+	mv data/cur_urls data/scrape_archive/cur_urls_${time_string}
 else
 	echo "no cur urls file"
 fi
 
 if [ -f "data/toAdd_urls" ];then
-	mv data/toAdd_urls scrape_archive/toaddurls_${time_string}
+	mv data/toAdd_urls data/scrape_archive/toaddurls_${time_string}
 else
 	echo "no to add urls file"
 fi
 
 if [ -f "data/toDelete_urls" ];then
-	mv data/toDelete_urls scrape_archive/todeleteurls_${time_string}
+	mv data/toDelete_urls data/scrape_archive/todeleteurls_${time_string}
 else
 	echo "no delete urls file"
 fi
 
 if [ -f "data/scrape_run_data_dump" ];then
-	mv data/scrape_run_data_dump scrape_archive/scrun_datadump_${time_string}
+	mv data/scrape_run_data_dump data/scrape_archive/scrun_datadump_${time_string}
 else
 	echo "no scrape run data dump file"
 fi
 
 if [ -f "data/final_parsed_items" ];then
-	mv data/final_parsed_items scrape_archive/fpitems_${time_string}
+	mv data/final_parsed_items data/scrape_archive/fpitems_${time_string}
 else
 	echo "no final parsed items file"
 fi

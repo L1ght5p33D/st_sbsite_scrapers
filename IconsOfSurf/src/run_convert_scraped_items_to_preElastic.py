@@ -62,8 +62,17 @@ if __name__ == "__main__":
         parsed_obj["condition"] = 100.0
         parsed_obj["latitude"] = float(parsed_obj["latitude"])
         parsed_obj["longitude"] = float(parsed_obj["longitude"])
+        
+        san_images = []
+        for cdn_url in parsed_obj["cdnImageList"]:
+            print("parsing cdn url ~" + cdn_url[0:2])
+            if cdn_url[0:2] == "//":
+                san_images.append("https:" + cdn_url)
+            else:
+                san_images.append(cdn_url)
 
-        parsed_obj["s3ImageTags"] = parsed_obj["cdnImageList"]
+        print("adding s3 tags " + str( san_images ))
+        parsed_obj["s3ImageTags"] = san_images
 
         buildDims = {"lengthFeet": "0", "lengthInches": "0",
                      "widthInches": "0", "widthFracNumer": "0",
@@ -125,5 +134,7 @@ if __name__ == "__main__":
 
         parsed_obj["dimensionMap"] = json.dumps(buildDims)
 
-        with open("../data/preElastic_items", "a+") as fef:
+        print("final item ~ " + str( parsed_obj ))
+        
+        with open(sys.argv[1] + "/preElastic_items", "a+") as fef:
             fef.write(json.dumps(parsed_obj) + "\n")

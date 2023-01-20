@@ -13,19 +13,18 @@ import sys
 
 
 def delete_items_by_delFile():
-    DELETE_FILE_NAME = "/toDelete_urls"
 
     diff_url_data = []
 
     df_urls = []
-    with open(sys.argv[2] + DELETE_FILE_NAME) as df:
+    with open(sys.argv[2] + "/toDelete_urls") as df:
         df_urls = df.readlines()
 
 
     for durl in df_urls:
         print("Deleting url:::" + str(durl))
-        _3TradeElasticInstance.delete_by_query(index= sys.argv[1],body= \
-            {"query":{"match_phrase": {"itemLink":durl}}})
+        _3TradeElasticInstance.delete_by_query(index= sys.argv[1],body={\
+            "query":{"match_phrase": {"itemLink":durl}}})
         print("Done")
 
 

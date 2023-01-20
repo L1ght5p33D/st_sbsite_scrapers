@@ -9,7 +9,6 @@ import sys
 import os
 from pprint import pprint
 import uuid
-#import mt_obj
 
 
 req_keys = [
